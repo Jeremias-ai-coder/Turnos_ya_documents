@@ -1,0 +1,65 @@
+/appointments/{appointmentId}/reviews:
+  post:
+    summary: Crear reseña para un turno
+    tags: [Reviews]
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: appointmentId
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './reviews.schemas.yaml#/CreateReviewRequest'
+    responses:
+      '201':
+        description: Reseña creada
+        content:
+          application/json:
+            schema:
+              $ref: './reviews.schemas.yaml#/Review'
+      '400':
+        description: Datos inválidos o el turno no está completado
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+      '403':
+        description: Permisos insuficientes (no eres el dueño del turno)
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+
+/businesses/{businessId}/reviews:
+  get:
+    summary: Listar reseñas de un negocio
+    tags: [Reviews]
+    parameters:
+      - in: path
+        name: businessId
+        required: true
+        schema:
+          type: integer
+      - in: query
+        name: page
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 10
+    responses:
+      '200':
+        description: Lista de reseñas paginadas
+        content:
+          application/json:
+            schema:
+              $ref: './reviews.schemas.yaml#/ReviewPaginatedResponse'

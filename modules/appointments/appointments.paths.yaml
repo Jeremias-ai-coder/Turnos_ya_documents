@@ -1,0 +1,154 @@
+/appointments:
+  get:
+    summary: Listar turnos paginados
+    tags: [Appointments]
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 10
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum: [PENDING, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED, NO_SHOW]
+    responses:
+      '200':
+        description: Lista de turnos
+        content:
+          application/json:
+            schema:
+              $ref: './appointments.schemas.yaml#/AppointmentPaginatedResponse'
+  post:
+    summary: Confirmar o crear un turno
+    tags: [Appointments]
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './appointments.schemas.yaml#/CreateAppointmentRequest'
+    responses:
+      '201':
+        description: Turno agendado exitosamente
+        content:
+          application/json:
+            schema:
+              $ref: './appointments.schemas.yaml#/Appointment'
+      '400':
+        description: Horario no disponible u error de validación
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+
+/appointments/hold:
+  post:
+    summary: Bloquear temporalmente un turno
+    tags: [Appointments]
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './appointments.schemas.yaml#/HoldAppointmentRequest'
+    responses:
+      '200':
+        description: Bloqueo exitoso (TTL 5-10 minutos)
+        content:
+          application/json:
+            schema:
+              $ref: './appointments.schemas.yaml#/HoldAppointmentResponse'
+      '400':
+        description: Horario no disponible
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+
+/appointments/{id}/status:
+  patch:
+    summary: Actualizar estado de un turno (maquina de estados)
+    tags: [Appointments]
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [status]
+            properties:
+              status:
+                type: string
+                enum: [CONFIRMED, IN_PROGRESS, COMPLETED, NO_SHOW]
+    responses:
+      '200':
+        description: Estado actualizado
+        content:
+          application/json:
+            schema:
+              $ref: './appointments.schemas.yaml#/Appointment'
+      '400':
+        description: Transición de estado inválida
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+      '403':
+        description: Permisos insuficientes
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+
+/appointments/{id}/cancel:
+  patch:
+    summary: Cancelar un turno
+    tags: [Appointments]
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './appointments.schemas.yaml#/CancelAppointmentRequest'
+    responses:
+      '200':
+        description: Turno cancelado
+        content:
+          application/json:
+            schema:
+              $ref: './appointments.schemas.yaml#/Appointment'
+      '400':
+        description: Transición de estado inválida
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'

@@ -1,0 +1,40 @@
+Review:
+  type: object
+  properties:
+    id:
+      type: integer
+      readOnly: true
+    appointmentId:
+      type: integer
+    rating:
+      type: integer
+      minimum: 1
+      maximum: 5
+    comment:
+      type: string
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+      readOnly: true
+
+CreateReviewRequest:
+  type: object
+  required: [rating]
+  properties:
+    rating:
+      type: integer
+      minimum: 1
+      maximum: 5
+    comment:
+      type: string
+
+ReviewPaginatedResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: '#/Review'
+    meta:
+      $ref: '../../components/pagination.yaml#/PaginationMeta'

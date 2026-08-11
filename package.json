@@ -1,0 +1,17 @@
+{
+  "name": "turnos-ya-docs",
+  "version": "1.0.0",
+  "description": "Contrato OpenAPI 3.0 y documentación de API REST de Turnos Ya",
+  "scripts": {
+    "mock": "npx @stoplight/prism-cli mock openapi.yaml -p 4040 --host 0.0.0.0",
+    "lint": "npx @stoplight/spectral-cli lint openapi.yaml",
+    "generate:types": "npx openapi-typescript openapi.yaml -o ./types/api-types.ts",
+    "docs:preview": "npx @redocly/cli preview-docs openapi.yaml"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.0.0",
+    "@stoplight/prism-cli": "^5.0.0",
+    "@stoplight/spectral-cli": "^6.0.0",
+    "openapi-typescript": "^7.0.0"
+  }
+}

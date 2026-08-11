@@ -1,0 +1,47 @@
+/auth/login:
+  post:
+    summary: Iniciar sesión
+    tags: [Auth]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './auth.schemas.yaml#/LoginRequest'
+    responses:
+      '200':
+        description: Inicio de sesión exitoso
+        content:
+          application/json:
+            schema:
+              $ref: './auth.schemas.yaml#/AuthResponse'
+      '401':
+        description: Credenciales incorrectas
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+
+/auth/register:
+  post:
+    summary: Registrar un nuevo usuario
+    tags: [Auth]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './auth.schemas.yaml#/RegisterRequest'
+    responses:
+      '201':
+        description: Registro exitoso
+        content:
+          application/json:
+            schema:
+              $ref: './auth.schemas.yaml#/AuthResponse'
+      '400':
+        description: Datos inválidos
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'

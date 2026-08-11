@@ -1,0 +1,63 @@
+Business:
+  type: object
+  properties:
+    id:
+      type: integer
+      readOnly: true
+    name:
+      type: string
+    description:
+      type: string
+      nullable: true
+    address:
+      type: string
+      nullable: true
+    logoUrl:
+      type: string
+      nullable: true
+    ownerId:
+      type: integer
+    latitude:
+      type: number
+      format: float
+      nullable: true
+    longitude:
+      type: number
+      format: float
+      nullable: true
+    timezone:
+      type: string
+      example: "America/Argentina/Buenos_Aires"
+
+CreateBusinessRequest:
+  type: object
+  required: [name]
+  properties:
+    name:
+      type: string
+    description:
+      type: string
+    address:
+      type: string
+    logoUrl:
+      type: string
+    latitude:
+      type: number
+    longitude:
+      type: number
+    timezone:
+      type: string
+      example: "America/Argentina/Buenos_Aires"
+
+UpdateBusinessRequest:
+  $ref: '#/CreateBusinessRequest'
+
+BusinessPaginatedResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: '#/Business'
+    meta:
+      $ref: '../../components/pagination.yaml#/PaginationMeta'

@@ -1,0 +1,102 @@
+Appointment:
+  type: object
+  properties:
+    id:
+      type: integer
+      readOnly: true
+    businessId:
+      type: integer
+    serviceId:
+      type: integer
+    userId:
+      type: integer
+    date:
+      type: string
+      format: date-time
+      example: "2026-08-15T15:30:00Z"
+    time:
+      type: string
+      format: date-time
+      example: "2026-08-15T15:30:00Z"
+    status:
+      type: string
+      enum: [PENDING, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED, NO_SHOW]
+      default: PENDING
+    createdAt:
+      type: string
+      format: date-time
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    createdByType:
+      type: string
+      enum: [CLIENT, STAFF, ADMIN]
+      readOnly: true
+    cancelledReason:
+      type: string
+      nullable: true
+
+AppointmentPaginatedResponse:
+  type: object
+  properties:
+    data:
+      type: array
+      items:
+        $ref: '#/Appointment'
+    meta:
+      $ref: '../../components/pagination.yaml#/PaginationMeta'
+
+CreateAppointmentRequest:
+  type: object
+  required: [businessId, serviceId, date, time]
+  properties:
+    businessId:
+      type: integer
+    serviceId:
+      type: integer
+    date:
+      type: string
+      format: date-time
+    time:
+      type: string
+      format: date-time
+    holdToken:
+      type: string
+      description: "Opcional. Token obtenido del endpoint /hold si se bloqueó previamente."
+
+HoldAppointmentRequest:
+  type: object
+  required: [businessId, serviceId, date, time]
+  properties:
+    businessId:
+      type: integer
+    serviceId:
+      type: integer
+    date:
+      type: string
+      format: date-time
+    time:
+      type: string
+      format: date-time
+
+HoldAppointmentResponse:
+  type: object
+  properties:
+    holdToken:
+      type: string
+    expiresAt:
+      type: string
+      format: date-time
+
+CancelAppointmentRequest:
+  type: object
+  required: [reason]
+  properties:
+    reason:
+      type: string
+      description: "Motivo de la cancelación"
+    cancelledByUserId:
+      type: string
+      description: "ID o UUID del usuario que cancela el turno"

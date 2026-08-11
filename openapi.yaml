@@ -1,0 +1,96 @@
+openapi: 3.0.3
+info:
+  title: Turnos_ya API
+  description: API RESTful modernizada con arquitectura modular, orientada a dominios (DDD).
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Servidor Principal (v1)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      $ref: './components/security.yaml#/bearerAuth'
+
+paths:
+  # Auth
+  /auth/login:
+    $ref: './modules/auth/auth.paths.yaml#/paths/~1auth~1login'
+  /auth/register:
+    $ref: './modules/auth/auth.paths.yaml#/paths/~1auth~1register'
+  
+  # Users
+  /users/me:
+    $ref: './modules/users/users.paths.yaml#/paths/~1users~1me'
+  
+  # Businesses
+  /businesses:
+    $ref: './modules/businesses/businesses.paths.yaml#/paths/~1businesses'
+  /businesses/{id}:
+    $ref: './modules/businesses/businesses.paths.yaml#/paths/~1businesses~1{id}'
+  
+  # Services
+  /businesses/{id}/services:
+    $ref: './modules/services/services.paths.yaml#/paths/~1businesses~1{id}~1services'
+    
+  # Staff
+  /businesses/{id}/staff:
+    $ref: './modules/staff/staff.paths.yaml#/paths/~1businesses~1{id}~1staff'
+
+  # Schedules
+  /businesses/{id}/schedules:
+    $ref: './modules/schedules/schedules.paths.yaml#/paths/~1businesses~1{id}~1schedules'
+
+  # Appointments
+  /appointments:
+    $ref: './modules/appointments/appointments.paths.yaml#/paths/~1appointments'
+  /appointments/hold:
+    $ref: './modules/appointments/appointments.paths.yaml#/paths/~1appointments~1hold'
+  /appointments/{id}/status:
+    $ref: './modules/appointments/appointments.paths.yaml#/paths/~1appointments~1{id}~1status'
+  /appointments/{id}/cancel:
+    $ref: './modules/appointments/appointments.paths.yaml#/paths/~1appointments~1{id}~1cancel'
+
+  # Reviews
+  /appointments/{appointmentId}/reviews:
+    $ref: './modules/reviews/reviews.paths.yaml#/paths/~1appointments~1{appointmentId}~1reviews'
+  /businesses/{businessId}/reviews:
+    $ref: './modules/reviews/reviews.paths.yaml#/paths/~1businesses~1{businessId}~1reviews'
+
+webhooks:
+  appointment.created:
+    post:
+      summary: Evento de creación de turno
+      description: Notificación a servicios externos cuando se reserva un turno.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './modules/appointments/appointments.schemas.yaml#/Appointment'
+      responses:
+        '200':
+          description: Evento recibido exitosamente
+  appointment.cancelled:
+    post:
+      summary: Evento de cancelación de turno
+      description: Notificación cuando un turno se cancela.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './modules/appointments/appointments.schemas.yaml#/Appointment'
+      responses:
+        '200':
+          description: Evento recibido exitosamente
+  appointment.reminder_sent:
+    post:
+      summary: Evento de recordatorio enviado
+      description: Evento gatillado para recordatorios automatizados.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './modules/appointments/appointments.schemas.yaml#/Appointment'
+      responses:
+        '200':
+          description: Evento recibido exitosamente

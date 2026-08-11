@@ -1,0 +1,22 @@
+PaginationMeta:
+  type: object
+  description: Metadata de paginación
+  properties:
+    page:
+      type: integer
+      example: 1
+    limit:
+      type: integer
+      example: 10
+    totalItems:
+      type: integer
+      example: 50
+    totalPages:
+      type: integer
+      example: 5
+    hasNextPage:
+      type: boolean
+      example: true
+    hasPrevPage:
+      type: boolean
+      example: false

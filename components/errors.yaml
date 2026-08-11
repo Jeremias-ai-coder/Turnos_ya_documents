@@ -1,0 +1,31 @@
+ErrorResponse:
+  type: object
+  description: Estructura de error estandarizada basada en RFC 7807.
+  properties:
+    statusCode:
+      type: integer
+      example: 400
+    error:
+      type: string
+      example: "Bad Request"
+    message:
+      type: string
+      example: "La solicitud contiene datos inválidos."
+    timestamp:
+      type: string
+      format: date-time
+      example: "2026-08-10T23:00:00.000Z"
+    path:
+      type: string
+      example: "/api/v1/auth/login"
+    details:
+      type: array
+      items:
+        type: object
+        properties:
+          field:
+            type: string
+            example: "email"
+          message:
+            type: string
+            example: "El formato del email es incorrecto."

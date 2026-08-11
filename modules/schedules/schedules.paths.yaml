@@ -1,0 +1,49 @@
+/businesses/{id}/schedules:
+  get:
+    summary: Obtener horarios de un negocio
+    tags: [Schedules]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Horarios del negocio
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './schedules.schemas.yaml#/Schedule'
+  post:
+    summary: Agregar horario a un negocio
+    tags: [Schedules]
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './schedules.schemas.yaml#/CreateScheduleRequest'
+    responses:
+      '201':
+        description: Horario creado
+        content:
+          application/json:
+            schema:
+              $ref: './schedules.schemas.yaml#/Schedule'
+      '403':
+        description: Permisos insuficientes
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'

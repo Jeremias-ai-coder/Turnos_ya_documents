@@ -1,0 +1,49 @@
+/users/me:
+  get:
+    summary: Obtener perfil del usuario actual
+    tags: [Users]
+    security:
+      - bearerAuth: []
+    responses:
+      '200':
+        description: Datos del usuario actual
+        content:
+          application/json:
+            schema:
+              $ref: './users.schemas.yaml#/User'
+      '401':
+        description: No autorizado
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+  put:
+    summary: Actualizar perfil del usuario actual
+    tags: [Users]
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './users.schemas.yaml#/UpdateProfileRequest'
+    responses:
+      '200':
+        description: Perfil actualizado
+        content:
+          application/json:
+            schema:
+              $ref: './users.schemas.yaml#/User'
+      '400':
+        description: Datos inválidos
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'
+      '401':
+        description: No autorizado
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'

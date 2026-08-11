@@ -1,0 +1,53 @@
+Service:
+  type: object
+  properties:
+    id:
+      type: integer
+      readOnly: true
+    businessId:
+      type: integer
+    name:
+      type: string
+    description:
+      type: string
+      nullable: true
+    durationMinutes:
+      type: integer
+      default: 30
+    price:
+      type: number
+      format: float
+      default: 0
+    bufferTime:
+      type: integer
+      description: "Tiempo extra (en minutos) necesario antes o después de la cita"
+      default: 0
+    status:
+      type: string
+      enum: [pending, approved, rejected]
+      default: pending
+    minCancellationNoticeHours:
+      type: integer
+      example: 24
+    allowReschedule:
+      type: boolean
+      default: true
+
+CreateServiceRequest:
+  type: object
+  required: [name, durationMinutes, price]
+  properties:
+    name:
+      type: string
+    description:
+      type: string
+    durationMinutes:
+      type: integer
+    price:
+      type: number
+    bufferTime:
+      type: integer
+    minCancellationNoticeHours:
+      type: integer
+    allowReschedule:
+      type: boolean

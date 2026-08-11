@@ -1,0 +1,42 @@
+User:
+  type: object
+  properties:
+    id:
+      type: integer
+      readOnly: true
+    name:
+      type: string
+    email:
+      type: string
+      format: email
+    role:
+      type: string
+      enum: [client, owner, administrator]
+      default: client
+    phone:
+      type: string
+      nullable: true
+    emailNotifications:
+      type: boolean
+    whatsappNotifications:
+      type: boolean
+    createdAt:
+      type: string
+      format: date-time
+      readOnly: true
+    deletedAt:
+      type: string
+      format: date-time
+      nullable: true
+
+UpdateProfileRequest:
+  type: object
+  properties:
+    name:
+      type: string
+    phone:
+      type: string
+    emailNotifications:
+      type: boolean
+    whatsappNotifications:
+      type: boolean

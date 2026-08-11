@@ -1,0 +1,49 @@
+/businesses/{id}/services:
+  get:
+    summary: Listar servicios de un negocio
+    tags: [Services]
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    responses:
+      '200':
+        description: Lista de servicios
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './services.schemas.yaml#/Service'
+  post:
+    summary: Crear servicio para un negocio
+    tags: [Services]
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: './services.schemas.yaml#/CreateServiceRequest'
+    responses:
+      '201':
+        description: Servicio creado (pendiente de aprobación)
+        content:
+          application/json:
+            schema:
+              $ref: './services.schemas.yaml#/Service'
+      '403':
+        description: Permisos insuficientes
+        content:
+          application/json:
+            schema:
+              $ref: '../../components/errors.yaml#/ErrorResponse'

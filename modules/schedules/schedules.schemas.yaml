@@ -1,0 +1,32 @@
+Schedule:
+  type: object
+  properties:
+    id:
+      type: integer
+      readOnly: true
+    businessId:
+      type: integer
+    dayOfWeek:
+      type: integer
+      description: "1 (Lunes) a 7 (Domingo)"
+    startTime:
+      type: string
+      format: date-time
+      example: "2026-08-15T09:00:00Z"
+    endTime:
+      type: string
+      format: date-time
+      example: "2026-08-15T18:00:00Z"
+
+CreateScheduleRequest:
+  type: object
+  required: [dayOfWeek, startTime, endTime]
+  properties:
+    dayOfWeek:
+      type: integer
+    startTime:
+      type: string
+      format: date-time
+    endTime:
+      type: string
+      format: date-time
