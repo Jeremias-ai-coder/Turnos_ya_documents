@@ -37,10 +37,12 @@ Actualmente, una gran cantidad de comercios y profesionales independientes gesti
 ### Propuesta de Solución y Valor
 **Turnos_ya** ofrece una solución integral multiplataforma compuesta por una API centralizada, un portal Web SPA interactivo y una aplicación Móvil:
 * **Autonomía 24/7 para el Cliente:** Visualización transparente de comercios, catálogo de servicios, precios, duración y franjas horarias disponibles al instante.
-* **Bloqueo Temporal de Seguridad (*Hold Tokens*):** Mecanismo transaccional que reserva temporalmente un turno mientras el usuario confirma la operación, previniendo colisiones de reservas simultáneas.
-* **Panel de Control Integral para Comercios:** Gestión inteligente de agenda diaria/semanal, configuración de horarios de atención, colchón de tiempo entre citas (*buffer time*), políticas de cancelación y seguimiento de turnos.
-* **Control de Acceso Basado en Roles (RBAC):** Seguridad estricta que distingue privilegios entre Clientes (`client`), Dueños/Prestadores (`owner`) y Administradores de Sistema (`administrator`).
-* **Arquitectura Escalable y Desacoplada:** Backend con Arquitectura Limpia de 3 Capas, persistencia tipada con Prisma ORM sobre MySQL y contrato oficial estandarizado en OpenAPI 3.0.
+* **Bloqueo Temporal de Seguridad (*Hold Tokens*):** Mecanismo transaccional que reserva temporalmente un turno (10 min) mientras el usuario confirma la operación, previniendo colisiones de reservas simultáneas.
+* **Geolocalización Inmediata:** Detección de proximidad y cálculo de distancia en kilómetros tanto en la Web como en la App Móvil.
+* **Panel de Control Integral para Comercios:** Gestión inteligente de agenda diaria/semanal, configuración de horarios de atención, colchón de tiempo entre citas (*buffer time*), políticas de cancelación y seguimiento de turnos en Web y Móvil.
+* **Autenticación Híbrida y Seguridad:** Soporte para registro tradicional, Google OAuth 2.0, verificación de correo progresiva (código de 6 dígitos y token en 1 clic), recuperación de contraseñas y 2FA por correo para cambios de clave.
+* **Centro de Notificaciones y Worker de Recordatorios:** Campanita interactiva con contador no leído y worker en segundo plano que despacha correos automáticos 1 hora antes del turno a través de Nodemailer SMTP.
+* **Control de Acceso Basado en Roles (RBAC):** Distinción estricta entre Clientes (`client`), Dueños/Prestadores (`owner`) y Administradores de Sistema (`administrator`).
 
 ### Público Objetivo y Rubros
 * **Fase 1 (MVP de Alta Frecuencia):** Peluquerías, barberías, salones de manicura y centros de estética integral.
@@ -50,46 +52,40 @@ Actualmente, una gran cantidad de comercios y profesionales independientes gesti
 
 ## 👥 2. Equipo de Trabajo y Definición de Roles
 
-Para garantizar una ejecución eficiente y organizada, el proyecto distribuye sus responsabilidades técnicas y operativas de la siguiente manera:
-
 | Integrante | Rol Principal | Especialidad / Enfoque | Responsabilidades Clave |
 | :--- | :--- | :--- | :--- |
-| **Jeremías Collaud** | **Tech Lead & Backend Architect** | Arquitectura de Software, Backend RESTful & Base de Datos | • Diseño e implementación de la Arquitectura de 3 Capas en Node.js, Express y TypeScript.<br>• Modelado relacional y migraciones con Prisma ORM en base de datos MySQL.<br>• Implementación de seguridad: Autenticación JWT, RBAC, hashing bcrypt y manejo uniforme de errores RFC 7807.<br>• Lógica de negocio crítica de reservas concurrentes y gestión de *Hold Tokens*.<br>• Co-diseño del contrato de integración OpenAPI 3.0 y coordinación general del repositorio. |
-| **Emmanuel Román** | **Frontend Web Lead & UI/UX Designer** | Desarrollo Web SPA & Sistema de Diseño Visual | • Arquitectura y desarrollo de la aplicación cliente SPA en React 19 + TypeScript + Vite.<br>• Diseño e implementación del *Design System* CSS (paleta cromática, variables CSS globales, tokens de superficie y componentes reutilizables).<br>• Flujos de usuario: Buscador interactivo de comercios, Wizard de reserva paso a paso (*Booking Flow*), gestión de "Mis Turnos" y Perfil.<br>• Desarrollo del panel de gestión comercial (*Dashboard*) para prestadores (agenda, catálogo de servicios y horarios de atención). |
-| **Miqueas Müller** | **Mobile Lead, QA & Integración de Sistemas** | Desarrollo Móvil & Aseguramiento de Calidad (QA) | • Planificación y desarrollo del cliente móvil multiplataforma para smartphones (Android / iOS).<br>• Aseguramiento de calidad de software (QA): Diseño y ejecución de suites de pruebas en Postman para validación de la API REST.<br>• Auditoría de conformidad OpenAPI mediante Spectral Linter y configuración de servidores simulados con Prism.<br>• Planificación de servicios periféricos: Geolocalización en mapa interactivo y sistema de alertas/notificaciones push contra el ausentismo (*no-show*). |
+| **Jeremías Collaud** | **Tech Lead & Backend Architect** | Arquitectura de Software, Backend RESTful & Base de Datos | • Diseño e implementación de la Arquitectura Limpia de 3 Capas en Node.js, Express y TypeScript.<br>• Modelado relacional y migraciones con Prisma ORM en MySQL.<br>• Implementación de seguridad: JWT, Google OAuth 2.0, RBAC, hashing bcrypt, verificación de email y 2FA.<br>• Worker asíncrono de recordatorios de turnos (Nodemailer SMTP) y Hold Tokens transaccionales.<br>• Co-diseño del contrato OpenAPI 3.0, suites de pruebas Jest y coordinación general del repositorio. |
+| **Emmanuel Román** | **Frontend Web Lead & UI/UX Designer** | Desarrollo Web SPA & Sistema de Diseño Visual | • Arquitectura y desarrollo de la SPA en React 19 + TypeScript + Vite 8.<br>• Implementación del Sistema de Diseño CSS nativo (sin dependencias pesadas).<br>• Flujos de usuario: Buscador interactivo con geolocalización, Asistente de reserva en 3 pasos (*Booking Flow*), gestión de "Mis Turnos" y Perfil.<br>• Centro de notificaciones interactivo (campanita) y autenticación con Google Identity Services.<br>• Dashboard para prestadores y panel global de administración del sistema (`SystemAdmin`). |
+| **Miqueas Müller** | **Mobile Lead, QA & Integración de Sistemas** | Desarrollo Móvil & Aseguramiento de Calidad (QA) | • Desarrollo del cliente móvil multiplataforma en React Native + Expo SDK 57 (Android / iOS).<br>• Flujos móviles: Exploración por geolocalización (`expo-location`), reserva táctil con Hold Tokens y panel de Dueño (`OwnerAgendaScreen`, `OwnerServicesScreen`, etc.).<br>• Aseguramiento de calidad (QA): Suites de pruebas automatizadas con Vitest y validación de contrato con Spectral Linter.<br>• Colecciones de pruebas en Postman para validación de endpoints y testing de integración. |
 
 ---
 
 ## 🗓️ 3. Agenda de Trabajo y Cronograma
 
-El proyecto sigue un ciclo iterativo estructurado en fases para validar cada componente antes de su integración final:
-
 ```text
   [ Fase 1: Arquitectura Base ] ──▶ [ Fase 2: Backend & Contrato API ] ──▶ [ Fase 3: Frontend Web SPA ]
-                                                                                   │
-                                  [ Fase 5: Testing Integral & Cierre ] ◀── [ Fase 4: Mobile & Integraciones ]
+                                                                                    │
+                                  [ Fase 5: Pruebas Integrales & Cierre ] ◀── [ Fase 4: Frontend Mobile ]
 ```
 
 | Fase / Hito | Alcance y Entregables | Responsables | Estado |
 | :--- | :--- | :--- | :---: |
-| **Fase 1: Análisis y Arquitectura Base** | • Relevamiento de necesidades y redacción del *Project Brief*.<br>• Diseño del Modelo Entidad-Relación y definición del stack tecnológico.<br>• Lineamientos visuales iniciales y tokens del sistema de diseño. | Todo el equipo | **Completado** ✅ |
-| **Fase 2: Contrato OpenAPI & Backend API** | • Especificación OpenAPI 3.0 estructurada por dominios (DDD).<br>• Servidor Node.js + Express con arquitectura de 3 capas (Inversión de dependencias).<br>• Prisma ORM + MySQL, endpoints de Auth, Business, Services, Schedules, Appointments y Hold Tokens.<br>• Colección automatizada de Postman y servidores Mock (Prism). | Jeremías Collaud<br>Miqueas Müller | **Completado** ✅ |
-| **Fase 3: Frontend Web SPA & Paneles** | • Aplicación Web React 19 + TypeScript + Vite operativa.<br>• Implementación del Sistema de Diseño CSS propio (sin dependencias pesadas).<br>• Vistas de cliente (Home, Detalle, Reserva interactiva, Perfil, Mis Turnos).<br>• Panel de control comercial para prestadores (Dashboard de agenda y servicios). | Emmanuel Román<br>Jeremías Collaud | **En Ajustes Finales** 🚀 |
-| **Fase 4: Frontend Mobile & Servicios Periféricos** | • Estructuración del proyecto móvil multiplataforma (Android / iOS).<br>• Integración de consumo de API según contrato OpenAPI.<br>• Geolocalización de comercios en mapa interactivo.<br>• Notificaciones push / recordatorios de turnos programados. | Miqueas Müller<br>Emmanuel Román | **En Planificación / Desarrollo** 📱 |
-| **Fase 5: Pruebas Integrales, Despliegue & Cierre** | • Pruebas End-to-End (E2E) y de concurrencia.<br>• Despliegue en entorno de pruebas / producción.<br>• Consolidación de manuales técnicos, documentación académica y defensa de proyecto. | Todo el equipo | **Próximo Hito** 🎯 |
+| **Fase 1: Análisis y Arquitectura Base** | • Relevamiento de requerimientos y redacción del *Project Brief*.<br>• Diseño del Modelo Entidad-Relación y definición del stack tecnológico.<br>• Lineamientos visuales iniciales y tokens del sistema de diseño. | Todo el equipo | **Completado** ✅ |
+| **Fase 2: Contrato OpenAPI & Backend API** | • Especificación OpenAPI 3.0 estructurada por dominios (DDD).<br>• Servidor Node.js + Express con Clean Architecture (Inversión de dependencias).<br>• Prisma ORM + MySQL, endpoints de Auth, Businesses, Services, Schedules, Appointments y Hold Tokens.<br>• Worker de recordatorios de turnos (Nodemailer SMTP), endpoints de verificación y suites Jest. | Jeremías Collaud<br>Miqueas Müller | **Completado** ✅ |
+| **Fase 3: Frontend Web SPA & Paneles** | • Aplicación Web React 19 + TypeScript + Vite 8 operativa.<br>• Sistema de diseño en CSS Vanilla nativo.<br>• Vistas de cliente (Home con geolocalización, Detalle, Reserva en 3 pasos, Perfil, Mis Turnos, Verificación de Email y Recuperación de Clave).<br>• Dashboard para prestadores y panel global de administración (`SystemAdmin`).<br>• Botón de Google OAuth y campanita de notificaciones en tiempo real.<br>• Suite de pruebas unitarias con Vitest. | Emmanuel Román<br>Jeremías Collaud | **Completado** ✅ |
+| **Fase 4: Frontend Mobile & Experiencia Nativa** | • Aplicación móvil multiplataforma en React Native + Expo SDK 57.<br>• Consumo de API REST con configuración dinámica de IP para testing en celular físico.<br>• Geolocalización de comercios (`expo-location`) y cálculo de distancia.<br>• Asistente de reserva táctil con Hold Tokens y gestión de turnos.<br>• Panel de administración para dueños integrado en la app móvil (Agenda, Local, Horarios, Servicios).<br>• Suite de pruebas unitarias con Vitest. | Miqueas Müller<br>Emmanuel Román | **Completado** ✅ |
+| **Fase 5: Pruebas Integrales, Despliegue & Cierre** | • Pruebas End-to-End (E2E) y de concurrencia de reservas.<br>• Despliegue en entorno de pruebas / producción (Render / Vercel).<br>• Consolidación de manuales técnicos, documentación académica y defensa de proyecto. | Todo el equipo | **En Ejecución** 🎯 |
 
 ---
 
 ## 🧭 4. Índice General del Ecosistema
 
-Para consultar en detalle cada aspecto técnico del sistema, dispones de las siguientes guías específicas:
-
 | Módulo / Documento | Descripción Técnica | Enlace Directo |
 | :--- | :--- | :--- |
-| 🖥️ **Backend RESTful API** | Servidor Node.js + Express + Prisma + MySQL. Arquitectura de 3 capas, Inversión de Dependencias (DIP), Patrón Repositorio, JWT, RBAC y sistema de *Hold Tokens*. | [backend-api.md](./backend-api.md) \| [Repositorio Backend](../Turnos_ya_backend-api-main/README.md) |
-| 🌐 **Frontend Web SPA** | Aplicación Web cliente construida en React 19 + Vite + TypeScript. Gestión de estado con Context API, consumo de endpoints y vistas adaptativas. | [frontend-web.md](./frontend-web.md) \| [Repositorio Web](../Turnos_ya_frontend_web-main/README.md) |
-| 📱 **Frontend Mobile** | Aplicación móvil multiplataforma orientada a Android e iOS con enfoque en reserva rápida, mapas y alertas push. | [frontend-mobile.md](./frontend-mobile.md) \| [Repositorio Mobile](../Turnos_ya_frontend_mobile-main/README.md) |
-| 🎨 **Design System** | Sistema de diseño visual propietario: variables CSS, paleta de colores, tipografía, escalas de espaciado y componentes modulares. | [design-system.md](./design-system.md) |
+| 🖥️ **Backend RESTful API** | Servidor Node.js + Express + Prisma + MySQL. Arquitectura Limpia de 3 capas, Inversión de Dependencias (DIP), Patrón Repositorio, JWT, Google OAuth, Nodemailer SMTP, worker de recordatorios y suites Jest. | [backend-api.md](./backend-api.md) \| [Repositorio Backend](../Turnos_ya_backend-api-main/README.md) |
+| 🌐 **Frontend Web SPA** | Aplicación Web cliente construida en React 19 + Vite 8 + TypeScript. Gestión de estado con Context API, Google OAuth, campanita de notificaciones, panel de dueño y administrador, y tests con Vitest. | [frontend-web.md](./frontend-web.md) \| [Repositorio Web](../Turnos_ya_frontend_web-main/README.md) |
+| 📱 **Frontend Mobile** | Aplicación móvil multiplataforma en React Native + Expo SDK 57 + TypeScript. Reserva táctil, geolocalización (`expo-location`), panel completo de dueño y tests con Vitest. | [frontend-mobile.md](./frontend-mobile.md) \| [Repositorio Mobile](../Turnos_ya_frontend_mobile-main/README.md) |
+| 🎨 **Design System** | Sistema de diseño visual propietario: variables CSS, paleta "Mercado Libre", tipografía Plus Jakarta Sans, escalas de espaciado y componentes modulares. | [design-system.md](./design-system.md) |
 | 📑 **Contrato OpenAPI 3.0** | Especificación formal del contrato de la API RESTful particionado en dominios DDD. | [openapi.yaml](./openapi.yaml) |
 | 🧪 **Colección Postman** | Colección exportada de endpoints con scripts automáticos para guardar el token JWT en entornos de testing. | [postman_collection.json](./postman_collection.json) |
 
@@ -105,8 +101,8 @@ Este repositorio contiene la definición formal y canónica de la API RESTful de
   * `errors.yaml`: Respuestas estandarizadas de error bajo la norma internacional **RFC 7807** (*Problem Details for HTTP APIs*).
   * `pagination.yaml`: Estructura común para paginación de listados (`page`, `limit`, `total`, `totalPages`).
   * `security.yaml`: Esquema de autenticación Bearer JWT (`bearerAuth`).
-* **`modules/`**: Agrupación lógica de dominios de negocio, cada uno con sus endpoints y esquemas de datos:
-  * `auth`: Registro, autenticación y obtención de perfil del usuario autenticado.
+* **`modules/`**: Agrupación lógica de dominios de negocio:
+  * `auth`: Registro, autenticación, perfil, recuperación de contraseñas y verificación.
   * `users`: Administración y consulta de usuarios del sistema.
   * `businesses`: Alta, modificación, geolocalización y consulta pública de comercios.
   * `services`: Catálogo de servicios por comercio (duración, precio, buffer time, políticas).
@@ -119,7 +115,7 @@ Este repositorio contiene la definición formal y canónica de la API RESTful de
 
 ## 🛠️ 6. Herramientas y Scripts para la Especificación
 
-Los contratos YAML modularizados se validan, compilan y ejecutan localmente mediante herramientas de última generación configuradas en `package.json`:
+Los contratos YAML modularizados se validan, compilan y ejecutan localmente mediante herramientas configuradas en `package.json`:
 
 1. **Instalación de Dependencias**:
    ```bash
@@ -133,7 +129,7 @@ Los contratos YAML modularizados se validan, compilan y ejecutan localmente medi
    ```
 
 3. **Servidor Mock Simulado (Prism)**:
-   Inicia un servidor local en `http://localhost:4040` que emula el comportamiento de la API y responde datos basados en el contrato:
+   Inicia un servidor local en `http://localhost:4040` que emula el comportamiento de la API:
    ```bash
    npm run mock
    ```
@@ -173,7 +169,7 @@ Turnos_ya_documents-main/
 │   └── security.yaml              # Esquema de autenticación Bearer JWT
 ├── modules/                       # Dominios de negocio (DDD)
 │   ├── appointments/              # Endpoints y esquemas de turnos y hold tokens
-│   ├── auth/                      # Endpoints de autenticación y registro
+│   ├── auth/                      # Endpoints de autenticación, recuperación y verificación
 │   ├── businesses/                # Endpoints de gestión y consulta de comercios
 │   ├── reviews/                   # Endpoints de valoraciones y comentarios
 │   ├── schedules/                 # Endpoints de configuración de horarios
